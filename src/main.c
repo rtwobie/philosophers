@@ -1,50 +1,71 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <time.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 15:32:11 by rha-le            #+#    #+#             */
+/*   Updated: 2025/04/28 20:43:02 by rha-le           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	*routine1(void *ptr)
+#include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
+#include "structs.h"
+#include "init.h"
+#include "util.h"
+#include "routine.h"
+#include "print.h"
+
+int	get_input(t_table *table, char *argv[])
 {
-	(void)ptr;
-	for (int i = 0; i < 8; i++)
-	{
-		printf("marx[%i]\n", i);
-		printf("marx: sleeping...\n");
-		sleep(3);
-		printf("marx: thinking...\n");
-		sleep(1);
-		printf("marx: eating...\n");
-		sleep(2);
-	}
-	printf("marx: died...\n");
+	table->philo_count = atoui(argv[1]);
+	table->time._to_die = atoui64(argv[2]) * 1000;
+	table->time._to_eat = atoui64(argv[3]) * 1000;
+	table->time._to_sleep = atoui64(argv[4]) * 1000;
+	if (table->philo_count == 0 || table->time._to_die == 0 || \
+		table->time._to_sleep == 0 || table->time._to_eat == 0)
+		return (1);
+	// TODO: check int_max
 	return (0);
 }
 
-void	*routine2(void *ptr)
+void	start(t_table *table)
 {
-	(void)ptr;
-	for (int i = 0; i < 4; i++)
+	unsigned int	i;
+
+	i = 0;
+	while (i < table->philo_count)
 	{
-		printf("pascal[%i]\n", i);
-		printf("pascal: eating...\n");
-		sleep(2);
-		printf("pascal: sleeping...\n");
-		sleep(3);
-		printf("pascal: thinking...\n");
-		sleep(1);
+		pthread_create(&table->philo[i].tid, NULL, routine, &table->philo[i]);
+		++i;
+		// TODO: maybe add threat protection
 	}
-	printf("pascal: died...\n");
-	return (0);
+	table->all_threads_born = true;
+	table->time.start_time = get_starttime_ms();
 }
 
 int	main(int argc, char *argv[])
 {
-	(void)argc;
-	(void)argv;
-	pthread_t	marx;
-	pthread_t	pascal;
+	t_table	table;
 
-	pthread_create(&marx, NULL, routine1, NULL);
-	pthread_create(&pascal, NULL, routine2, NULL);
-	pthread_join(marx, NULL);
+	if (argc != 5)
+		return (1);
+	memset(&table, 0, sizeof(table));
+	if (get_input(&table, argv) != 0)
+	{
+		free_all(&table);
+		return (1);
+	}
+	if (init_table(&table) != 0)
+	{
+		free_all(&table);
+		return (1);
+	}
+	start(&table);
+	for (unsigned int i = 0; i < table.philo_count; i++)
+		pthread_join(table.philo[i].tid, NULL);
+
 }

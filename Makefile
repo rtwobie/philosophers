@@ -12,6 +12,7 @@ CFLAGS	+= -Wextra
 CFLAGS	+= -Werror
 CFLAGS	+= -pedantic
 CFLAGS	+= -Wconversion
+CFLAGS	+= -pthread
 CFLAGS	+= $(ADDFLAGS)
 
 CPPFLAGS	:=
@@ -26,11 +27,19 @@ ifeq ($(DEBUG), 1)
 	LDFLAGS	+= -ggdb3 -O0
 endif
 
+ifeq ($(FSAN), 1)
+	CFLAGS	+= -fsanitize=thread
+endif
+
 # sources
 SRC		:=
 
 vpath %.c src/
 SRC		+= main.c
+SRC		+= init.c
+SRC		+= routine.c
+SRC		+= print.c
+SRC		+= util.c
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))
