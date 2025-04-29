@@ -53,7 +53,7 @@ uint64_t	atoui64(const char *nptr)
 	return ((uint64_t)num);
 }
 
-void	destroy_mutex(pthread_mutex_t *mutex)
+void	destroy_mutex(t_mutex *mutex)
 {
 	while (mutex)
 		pthread_mutex_destroy(mutex++);

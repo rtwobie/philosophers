@@ -19,7 +19,7 @@
 
 unsigned int	atoui(const char *nptr);
 uint64_t	atoui64(const char *nptr);
-void	destroy_mutex(pthread_mutex_t *mutex);
+void	destroy_mutex(t_mutex *mutex);
 void	free_all(t_table *table);
 
 #endif //!UTILS_H

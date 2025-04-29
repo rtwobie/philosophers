@@ -6,17 +6,19 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 15:32:11 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/28 20:43:02 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/04/29 20:34:32 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pthread.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "structs.h"
 #include "init.h"
 #include "util.h"
 #include "routine.h"
+#include "monitor.h"
 #include "print.h"
 
 int	get_input(t_table *table, char *argv[])
@@ -29,6 +31,7 @@ int	get_input(t_table *table, char *argv[])
 		table->time._to_sleep == 0 || table->time._to_eat == 0)
 		return (1);
 	// TODO: check int_max
+	// TODO: table->time._to_think = ???????????
 	return (0);
 }
 
@@ -44,7 +47,8 @@ void	start(t_table *table)
 		// TODO: maybe add threat protection
 	}
 	table->all_threads_born = true;
-	table->time.start_time = get_starttime_ms();
+	table->time.start_time = get_time_ms();
+	pthread_create(&table->monitor, NULL, monitor, &table);
 }
 
 int	main(int argc, char *argv[])
@@ -67,5 +71,5 @@ int	main(int argc, char *argv[])
 	start(&table);
 	for (unsigned int i = 0; i < table.philo_count; i++)
 		pthread_join(table.philo[i].tid, NULL);
-
+	pthread_join(table.monitor, NULL);
 }

@@ -18,7 +18,7 @@
 
 static int	init_forks(t_table *table)
 {
-	pthread_mutex_t	*fork;
+	t_mutex			*fork;
 	unsigned int	i;
 
 	table->fork = malloc(sizeof(*fork) * (table->philo_count + 1));
@@ -54,7 +54,7 @@ static int	init_philos(t_table *table)
 	{
 		philo[i].id = (int)i + 1;
 		philo[i].time = &table->time;
-		philo[i].all_threads_born = &table->all_threads_born;
+		philo[i].table = table;
 		philo[i].right_fork = &table->fork[i];
 		philo[i].left_fork = &table->fork[(i + 1) % table->philo_count];
 		++i;
@@ -64,10 +64,12 @@ static int	init_philos(t_table *table)
 
 int init_table(t_table *table)
 {
-	if (init_forks(table) != 0)
+	if (pthread_mutex_init(&table->print, NULL) != 0)
 		return (1);
-	if (init_philos(table) != 0)
+	if (init_forks(table) != 0)
 		return (2);
+	if (init_philos(table) != 0)
+		return (3);
 	return (0);
 }
 

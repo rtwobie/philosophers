@@ -38,6 +38,7 @@ vpath %.c src/
 SRC		+= main.c
 SRC		+= init.c
 SRC		+= routine.c
+SRC		+= monitor.c
 SRC		+= print.c
 SRC		+= util.c
 
