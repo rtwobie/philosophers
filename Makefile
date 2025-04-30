@@ -36,8 +36,10 @@ SRC		:=
 
 vpath %.c src/
 SRC		+= main.c
-SRC		+= init.c
 SRC		+= parse.c
+SRC		+= init.c
+SRC		+= simulation.c
+SRC		+= routine.c
 SRC		+= cleanup.c
 SRC		+= log.c
 

@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.h                                             :+:      :+:    :+:   */
+/*   routine.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/30 14:35:44 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 20:04:19 by rha-le           ###   ########.fr       */
+/*   Created: 2025/04/30 19:02:23 by rha-le            #+#    #+#             */
+/*   Updated: 2025/04/30 19:05:01 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INIT_H
-# define INIT_H
+#ifndef ROUTINE_H
+# define ROUTINE_H
 
-# include "structs.h"
+void	*routine(void *arg);
 
-int	_parse_input(int argc, char *argv[], t_table *table);
-int	init(t_philo **philo, t_table *table, int argc, char *argv[]);
-
-#endif // !INIT_H
+#endif // !ROUTINE_H

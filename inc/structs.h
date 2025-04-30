@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:11:19 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 17:45:45 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/04/30 19:50:16 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ typedef struct s_table
 	int				time_to_sleep;
 	int				time_to_think;
 	bool			end_dining;
+	bool			in_sync;
+	t_mutex			wait_all;
 	struct s_fork	*fork;
 }		t_table;
 
@@ -39,7 +41,7 @@ typedef struct s_fork
 typedef struct s_philo
 {
 	unsigned int	id;
-	pthread_t		*philo;
+	pthread_t		*thread;
 	t_table			*table;
 	t_fork			*right_fork;
 	t_fork			*left_fork;

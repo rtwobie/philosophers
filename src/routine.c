@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.h                                             :+:      :+:    :+:   */
+/*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/30 14:35:44 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 20:04:19 by rha-le           ###   ########.fr       */
+/*   Created: 2025/04/30 19:04:58 by rha-le            #+#    #+#             */
+/*   Updated: 2025/04/30 19:54:24 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INIT_H
-# define INIT_H
+#include "structs.h"
 
-# include "structs.h"
+// TODO:
+void	*routine(void *arg)
+{
+	t_philo	*philo;
 
-int	_parse_input(int argc, char *argv[], t_table *table);
-int	init(t_philo **philo, t_table *table, int argc, char *argv[]);
-
-#endif // !INIT_H
+	philo = (t_philo *)arg;
+	(void)philo;
+	// wait until every philo is created
+	return (NULL);
+}

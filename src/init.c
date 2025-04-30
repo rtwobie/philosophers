@@ -6,15 +6,16 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:15:15 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 18:58:43 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/04/30 20:30:12 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <string.h>
-#include "log.h"
 #include "structs.h"
+#include "init.h"
 #include "cleanup.h"
+#include "log.h"
 
 static int	_init_forks(t_table *table)
 {
@@ -40,25 +41,25 @@ static int	_init_forks(t_table *table)
 	return (EXIT_SUCCESS);
 }
 
-static int	_init_philo(t_philo *philo, t_table *table)
+static int	_init_philo(t_philo **philo, t_table *table)
 {
 	int		i;
 
-	philo = malloc(((unsigned long)table->philo_count) * (sizeof(*philo)));
-	if (!philo)
+	*philo = malloc(((unsigned long)table->philo_count) * sizeof(**philo));
+	if (!*philo)
 		return (EXIT_FAILURE);
-	memset(philo, 0, (sizeof(*philo) * (unsigned long)table->philo_count));
+	memset(*philo, 0, ((unsigned long)table->philo_count) * sizeof(**philo));
 	i = 0;
 	while (i < table->philo_count)
 	{
-		philo[i].id = (unsigned int)i + 1;
-		philo->right_fork = &table->fork[i];
-		philo->left_fork = &table->fork[(i + 1) % table->philo_count];
-		philo->table = table;
+		(*philo)[i].id = (unsigned int)i + 1;
+		(*philo)[i].right_fork = &table->fork[i];
+		(*philo)[i].left_fork = &table->fork[i + 1 % table->philo_count];
+		(*philo)[i].table = table;
+		++i;
 	}
 	return (EXIT_SUCCESS);
 }
-
 
 /*static int	_calc_think_time(int time_to_eat, int time_to_sleep, int count)*/
 /*{*/
@@ -69,8 +70,17 @@ static int	_init_philo(t_philo *philo, t_table *table)
 /*	return (time_to_think);*/
 /*}*/
 
-int	init(t_philo *philo, t_table *table)
+int	init(t_philo **philo, t_table *table, int argc, char *argv[])
 {
+	if (_parse_input(argc, argv, table))
+		return (EXIT_FAILURE);
+	if (_init_forks(table))
+		return (EXIT_FAILURE);
+	if (_init_philo(philo, table))
+	{
+		destroy_forks(table->fork, table->philo_count);
+		return (EXIT_FAILURE);
+	}
 	table->end_dining = false;
 
 	// TODO: thinking_time
@@ -79,12 +89,5 @@ int	init(t_philo *philo, t_table *table)
 	/*	= _calc_think_time(table->time_to_eat, \*/
 	/*					table->time_to_sleep, \*/
 	/*					table->philo_count);*/
-	if (_init_forks(table))
-		return (EXIT_FAILURE);
-	if (_init_philo(philo, table))
-	{
-		destroy_forks(table->fork, table->philo_count);
-		return (EXIT_FAILURE);
-	}
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:32:46 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 17:46:44 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/04/30 19:10:06 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	_ft_atoi(const char *nptr)
 	return (num);
 }
 
-int	parse_input(int argc, char *argv[], t_table *table)
+int	_parse_input(int argc, char *argv[], t_table *table)
 {
 	if (argc != 5)
 		return (log_msg(WRONG_NUM_OF_ARG_MSG), EXIT_FAILURE);

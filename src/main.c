@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:28:32 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 17:46:11 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/04/30 20:04:20 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #include <string.h>
 #include "structs.h"
 #include "init.h"
+#include "simulation.h"
 
+#include <stdio.h>
 int	main(int argc, char *argv[])
 {
 	t_table	table;
@@ -22,9 +24,10 @@ int	main(int argc, char *argv[])
 
 	philo = NULL;
 	memset(&table, 0, sizeof(table));
-	if (parse_input(argc, argv, &table))
+	if (init(&philo, &table, argc, argv))
 		return (EXIT_FAILURE);
-	if (init(philo, &table))
+	if (simulation(philo, &table))
 		return (EXIT_FAILURE);
+	printf("SUCCESS!\n");
 	return (EXIT_SUCCESS);
 }
