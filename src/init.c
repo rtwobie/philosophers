@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:15:15 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 20:30:12 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/01 00:29:11 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,19 @@ static int	_init_philo(t_philo **philo, t_table *table)
 	{
 		(*philo)[i].id = (unsigned int)i + 1;
 		(*philo)[i].right_fork = &table->fork[i];
-		(*philo)[i].left_fork = &table->fork[i + 1 % table->philo_count];
+		(*philo)[i].left_fork = &table->fork[(i + 1) % table->philo_count];
 		(*philo)[i].table = table;
 		++i;
 	}
+	return (EXIT_SUCCESS);
+}
+
+static int	_init_mutex(t_table *table)
+{
+	if (pthread_mutex_init(&table->in_sync_mutex, NULL))
+		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
+	if (pthread_mutex_init(&table->log_mutex, NULL))
+		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -76,6 +85,8 @@ int	init(t_philo **philo, t_table *table, int argc, char *argv[])
 		return (EXIT_FAILURE);
 	if (_init_forks(table))
 		return (EXIT_FAILURE);
+	if (_init_mutex(table))
+		return (EXIT_FAILURE);
 	if (_init_philo(philo, table))
 	{
 		destroy_forks(table->fork, table->philo_count);
@@ -84,10 +95,9 @@ int	init(t_philo **philo, t_table *table, int argc, char *argv[])
 	table->end_dining = false;
 
 	// TODO: thinking_time
-
-	/*table->time_to_think \*/
-	/*	= _calc_think_time(table->time_to_eat, \*/
-	/*					table->time_to_sleep, \*/
-	/*					table->philo_count);*/
+	//	table->time_to_think \
+	//		= _calc_think_time(table->time_to_eat, \
+	//						table->time_to_sleep, \
+	//						table->philo_count);
 	return (EXIT_SUCCESS);
 }

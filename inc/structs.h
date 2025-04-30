@@ -28,7 +28,8 @@ typedef struct s_table
 	int				time_to_think;
 	bool			end_dining;
 	bool			in_sync;
-	t_mutex			wait_all;
+	t_mutex			in_sync_mutex;
+	t_mutex			log_mutex;
 	struct s_fork	*fork;
 }		t_table;
 
@@ -41,7 +42,7 @@ typedef struct s_fork
 typedef struct s_philo
 {
 	unsigned int	id;
-	pthread_t		*thread;
+	pthread_t		thread;
 	t_table			*table;
 	t_fork			*right_fork;
 	t_fork			*left_fork;
