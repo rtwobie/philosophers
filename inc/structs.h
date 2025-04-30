@@ -6,12 +6,14 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:11:19 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 19:50:16 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/01 00:53:03 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCTS_H
 # define STRUCTS_H
+
+#include <stdio.h> // TODO: delete after!
 
 # include <pthread.h>
 # include <stdbool.h>
@@ -21,12 +23,12 @@ typedef pthread_mutex_t	t_mutex;
 typedef struct s_table
 {
 	int				philo_count;
-	int				start_time;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				time_to_think;
-	bool			end_dining;
+	uint64_t		start_time;
+	bool			end;
 	bool			in_sync;
 	t_mutex			in_sync_mutex;
 	t_mutex			log_mutex;
