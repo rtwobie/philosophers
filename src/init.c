@@ -5,69 +5,86 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/27 19:18:49 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/28 20:39:26 by rha-le           ###   ########.fr       */
+/*   Created: 2025/04/30 15:15:15 by rha-le            #+#    #+#             */
+/*   Updated: 2025/04/30 18:58:43 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "log.h"
 #include "structs.h"
-#include "util.h"
+#include "cleanup.h"
 
-static int	init_forks(t_table *table)
+static int	_init_forks(t_table *table)
 {
-	pthread_mutex_t	*fork;
-	unsigned int	i;
+	t_fork	*fork;
+	int		i;
 
-	table->fork = malloc(sizeof(*fork) * (table->philo_count + 1));
+	table->fork = malloc(((unsigned long)table->philo_count) * (sizeof(*fork)));
+	if (!table->fork)
+		return (EXIT_FAILURE);
 	fork = table->fork;
-	if (!fork)
-		return (1);
-	memset(fork, 0, sizeof(*fork) * (table->philo_count + 1));
+	memset(fork, 0, (sizeof(*fork) * (unsigned long)table->philo_count));
 	i = 0;
 	while (i < table->philo_count)
 	{
-		if (pthread_mutex_init(&fork[i++], NULL) != 0)
+		if (pthread_mutex_init(&fork[i].mutex, NULL))
 		{
-			destroy_mutex(fork);
-			printf("fork init error!\n"); // NOTE: delete after !
-			return (2); // destroy at error
+			destroy_forks(fork, table->philo_count);
+			return (log_msg(ERR_INIT_FORKS_MSG), EXIT_FAILURE);
 		}
-	}
-	return (0);
-}
-
-static int	init_philos(t_table *table)
-{
-	t_philo			*philo;
-	unsigned int	i;
-
-	table->philo = malloc(sizeof(*philo) * table->philo_count);
-	philo = table->philo;
-	if (!philo)
-		return (1);
-	memset(philo, 0, sizeof(*philo) * table->philo_count);
-	i = 0;
-	while (i < table->philo_count)
-	{
-		philo[i].id = (int)i + 1;
-		philo[i].time = &table->time;
-		philo[i].all_threads_born = &table->all_threads_born;
-		philo[i].right_fork = &table->fork[i];
-		philo[i].left_fork = &table->fork[(i + 1) % table->philo_count];
+		fork[i].id = (unsigned int)i + 1;
 		++i;
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
-int init_table(t_table *table)
+static int	_init_philo(t_philo *philo, t_table *table)
 {
-	if (init_forks(table) != 0)
-		return (1);
-	if (init_philos(table) != 0)
-		return (2);
-	return (0);
+	int		i;
+
+	philo = malloc(((unsigned long)table->philo_count) * (sizeof(*philo)));
+	if (!philo)
+		return (EXIT_FAILURE);
+	memset(philo, 0, (sizeof(*philo) * (unsigned long)table->philo_count));
+	i = 0;
+	while (i < table->philo_count)
+	{
+		philo[i].id = (unsigned int)i + 1;
+		philo->right_fork = &table->fork[i];
+		philo->left_fork = &table->fork[(i + 1) % table->philo_count];
+		philo->table = table;
+	}
+	return (EXIT_SUCCESS);
 }
 
+
+/*static int	_calc_think_time(int time_to_eat, int time_to_sleep, int count)*/
+/*{*/
+/*	int	time_to_think;*/
+/**/
+/*	time_to_think = 0;*/
+/*	if ((count & 1) && )*/
+/*	return (time_to_think);*/
+/*}*/
+
+int	init(t_philo *philo, t_table *table)
+{
+	table->end_dining = false;
+
+	// TODO: thinking_time
+
+	/*table->time_to_think \*/
+	/*	= _calc_think_time(table->time_to_eat, \*/
+	/*					table->time_to_sleep, \*/
+	/*					table->philo_count);*/
+	if (_init_forks(table))
+		return (EXIT_FAILURE);
+	if (_init_philo(philo, table))
+	{
+		destroy_forks(table->fork, table->philo_count);
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}

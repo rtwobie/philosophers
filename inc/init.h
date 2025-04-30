@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/27 19:20:24 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/27 19:21:11 by rha-le           ###   ########.fr       */
+/*   Created: 2025/04/30 14:35:44 by rha-le            #+#    #+#             */
+/*   Updated: 2025/04/30 15:25:05 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "structs.h"
 
-int	init_table(t_table *table);
+int	parse_input(int argc, char *argv[], t_table *table);
+int	init(t_philo *philo, t_table *table);
 
-#endif //!INIT_H
+#endif // !INIT_H
