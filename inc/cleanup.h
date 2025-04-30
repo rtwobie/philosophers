@@ -16,5 +16,6 @@
 # include "structs.h"
 
 void	destroy_forks(t_fork *fork, int count);
+void	at_exit(t_philo *philo, t_table *table);
 
 #endif // !CLEANUP_H
