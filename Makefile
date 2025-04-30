@@ -40,8 +40,9 @@ SRC		+= parse.c
 SRC		+= init.c
 SRC		+= simulation.c
 SRC		+= routine.c
-SRC		+= cleanup.c
+SRC		+= time.c
 SRC		+= log.c
+SRC		+= cleanup.c
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))
