@@ -37,9 +37,9 @@ SRC		:=
 vpath %.c src/
 SRC		+= main.c
 SRC		+= init.c
-SRC		+= routine.c
-SRC		+= print.c
-SRC		+= util.c
+SRC		+= parse.c
+SRC		+= cleanup.c
+SRC		+= log.c
 
 OBJ		:= $(SRC:.c=.o)
 OBJ		:= $(addprefix $(OBJ_DIR)/, $(OBJ))
@@ -69,5 +69,8 @@ re:
 valtest:
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME) $(ARGS)
 
+heltest:
+	valgrind --tool=helgrind ./$(NAME) $(ARGS)
+
 .PHONY: all clean fclean re
-.PHONY: valtest
+.PHONY: valtest heltest
