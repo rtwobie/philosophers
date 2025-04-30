@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:15:15 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/01 00:29:11 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/01 01:14:58 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,7 @@ int	init(t_philo **philo, t_table *table, int argc, char *argv[])
 		destroy_forks(table->fork, table->philo_count);
 		return (EXIT_FAILURE);
 	}
-	table->end_dining = false;
-
 	// TODO: thinking_time
-	//	table->time_to_think \
-	//		= _calc_think_time(table->time_to_eat, \
-	//						table->time_to_sleep, \
-	//						table->philo_count);
+	//	table->time_to_think = _calc_think_time();
 	return (EXIT_SUCCESS);
 }

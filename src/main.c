@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:28:32 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/01 00:29:25 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/01 00:54:06 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "init.h"
 #include "simulation.h"
 
-#include <stdio.h>
 int	main(int argc, char *argv[])
 {
 	static t_table	table = {0};
