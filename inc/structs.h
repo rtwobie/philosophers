@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:11:19 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/01 00:53:03 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/01 17:09:21 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ typedef struct s_table
 	int				time_to_sleep;
 	int				time_to_think;
 	uint64_t		start_time;
-	bool			end;
 	bool			in_sync;
 	t_mutex			in_sync_mutex;
+	unsigned int	dead;
+	t_mutex			dead_mutex;
 	t_mutex			log_mutex;
 	struct s_fork	*fork;
 }		t_table;
