@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:15:15 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/01 01:14:58 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/01 17:23:48 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,21 @@ static int	_init_forks(t_table *table)
 	return (EXIT_SUCCESS);
 }
 
-static int	_init_philo(t_philo **philo, t_table *table)
+static int	_init_philo(t_philo **philos, t_table *table)
 {
 	int		i;
 
-	*philo = malloc(((unsigned long)table->philo_count) * sizeof(**philo));
-	if (!*philo)
+	*philos = malloc(((unsigned long)table->philo_count) * sizeof(**philos));
+	if (!*philos)
 		return (EXIT_FAILURE);
-	memset(*philo, 0, ((unsigned long)table->philo_count) * sizeof(**philo));
+	memset(*philos, 0, ((unsigned long)table->philo_count) * sizeof(**philos));
 	i = 0;
 	while (i < table->philo_count)
 	{
-		(*philo)[i].id = (unsigned int)i + 1;
-		(*philo)[i].right_fork = &table->fork[i];
-		(*philo)[i].left_fork = &table->fork[(i + 1) % table->philo_count];
-		(*philo)[i].table = table;
+		(*philos)[i].id = (unsigned int)i + 1;
+		(*philos)[i].right_fork = &table->fork[i];
+		(*philos)[i].left_fork = &table->fork[(i + 1) % table->philo_count];
+		(*philos)[i].table = table;
 		++i;
 	}
 	return (EXIT_SUCCESS);
@@ -66,6 +66,8 @@ static int	_init_mutex(t_table *table)
 	if (pthread_mutex_init(&table->in_sync_mutex, NULL))
 		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
 	if (pthread_mutex_init(&table->log_mutex, NULL))
+		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
+	if (pthread_mutex_init(&table->dead_mutex, NULL))
 		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
@@ -79,7 +81,7 @@ static int	_init_mutex(t_table *table)
 /*	return (time_to_think);*/
 /*}*/
 
-int	init(t_philo **philo, t_table *table, int argc, char *argv[])
+int	init(t_philo **philos, t_table *table, int argc, char *argv[])
 {
 	if (_parse_input(argc, argv, table))
 		return (EXIT_FAILURE);
@@ -87,7 +89,7 @@ int	init(t_philo **philo, t_table *table, int argc, char *argv[])
 		return (EXIT_FAILURE);
 	if (_init_mutex(table))
 		return (EXIT_FAILURE);
-	if (_init_philo(philo, table))
+	if (_init_philo(philos, table))
 	{
 		destroy_forks(table->fork, table->philo_count);
 		return (EXIT_FAILURE);
