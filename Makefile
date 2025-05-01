@@ -27,8 +27,9 @@ ifeq ($(DEBUG), 1)
 	LDFLAGS	+= -ggdb3 -O0
 endif
 
-ifeq ($(FSAN), 1)
+ifeq ($(TSAN), 1)
 	CFLAGS	+= -fsanitize=thread
+	LDFLAGS	+= -fsanitize=thread
 endif
 
 # sources
@@ -39,7 +40,8 @@ SRC		+= main.c
 SRC		+= parse.c
 SRC		+= init.c
 SRC		+= simulation.c
-SRC		+= routine.c
+SRC		+= monitor_routine.c
+SRC		+= philo_routine.c
 SRC		+= time.c
 SRC		+= log.c
 SRC		+= cleanup.c
