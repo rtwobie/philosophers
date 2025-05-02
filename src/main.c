@@ -18,7 +18,6 @@
 
 int	main(int argc, char *argv[])
 {
-	// TODO: refactor: change philo -> philos;
 	static t_table	table = {0};
 	t_philo			*philos;
 	pthread_t		monitor_thead;
