@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:45:56 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/01 17:17:18 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/02 16:48:21 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@
 
 static unsigned int	_check_alive(t_table *table)
 {
-	pthread_mutex_lock(&table->dead_mutex);
+	if (pthread_mutex_lock(&table->dead_mutex))
+		return (log_msg(ERR_MUTEX_LOCK_MSG), 0);
 	if (table->dead)
 		return (table->dead);
-	pthread_mutex_unlock(&table->dead_mutex);
+	if (pthread_mutex_unlock(&table->dead_mutex))
+		return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
 	return (0);
 }
 
@@ -31,7 +33,7 @@ void	*monitor_routine(void *arg)
 
 	philos = (t_philo *)arg;
 	table = philos->table;
-
+	dead = 0;
 	while (1)
 	{
 		dead = _check_alive(table);

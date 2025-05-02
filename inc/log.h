@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:48:42 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/01 17:17:05 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/02 16:21:04 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@
 # define INVALID_SLEEP_TIME_MSG "Invalid time_to_sleep!"
 # define ERR_INIT_FORKS_MSG "Failed to initialize forks!"
 # define ERR_INIT_MUTEX_MSG "Failed to initialize mutex!"
+# define ERR_MUTEX_LOCK_MSG "Failed to lock mutex!"
+# define ERR_MUTEX_UNLOCK_MSG "Failed to unlock mutex!"
+# define ERR_PTHREAD_CREATE_MSG "Failed to create thread!"
 
 void	log_msg(char *msg);
 int		log_philo(uint64_t timestamp, t_mutex *log_mutex, unsigned int id, char *status);
