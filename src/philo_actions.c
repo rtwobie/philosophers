@@ -16,66 +16,77 @@
 #include "log.h"
 
 // TODO: _eat(), _sleep(), _think(), _pickup(), _putdown()
+// WARNING: FIGURE OUT HOW TO SET DEAD VARIABLE WITHOUT BIG DELAY !
+//			+ FIGURE OUT WHY THE PROGRAM IS STUCK ONCE SOMEONE DIED !
 
-static int _pickup(unsigned int id, t_fork *right_fork, t_fork *left_fork)
+// TODO: change parameters to fit for NORMINETTE
+static int _pickup(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
 {
-	// WARN: If im stuck at lock how to die at the right time?
-	// --> if deadlock how do check death
-	if (id % 2 == 0)
+	t_table *table;
+
+	table = philo->table;
+	if (philo->id % 2 == 0)
 	{
 		if (pthread_mutex_lock(&right_fork->mutex))
 			return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
+		log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, DEBUG_FORK_R);
 		if (pthread_mutex_lock(&left_fork->mutex))
 			return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
+		log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, DEBUG_FORK_L);
 	}
 	else
 	{
 		if (pthread_mutex_lock(&left_fork->mutex))
 			return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
+		log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, DEBUG_FORK_L);
 		if (pthread_mutex_lock(&right_fork->mutex))
 			return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
+		log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, DEBUG_FORK_R);
 	}
 	return (EXIT_SUCCESS);
 }
 
-static int _putdown(t_fork *right_fork, t_fork *left_fork)
+static int _putdown(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
 {
+	t_table *table;
+
+	table = philo->table;
 	if (pthread_mutex_unlock(&right_fork->mutex))
 		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
+	log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, DEBUG_FORK_R2);
 	if (pthread_mutex_unlock(&left_fork->mutex))
 		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
-	return (EXIT_SUCCESS);
-}
-
-int	_philo_dies(t_philo *philo, t_mutex *dead_mutex)
-{
-	if (pthread_mutex_lock(dead_mutex))
-		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
-	philo->table->dead = philo->id;
-	if (pthread_mutex_unlock(dead_mutex))
-		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
+	log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, DEBUG_FORK_L2);
 	return (EXIT_SUCCESS);
 }
 
 int	_eat(t_philo *philo, useconds_t time_to_eat)
 {
 	t_table *table;
-	/*useconds_t time_now;*/
+	uint64_t time_now;
 
 	table = philo->table;
-	if (_pickup(philo->id, philo->right_fork, philo->left_fork))
+	if (_pickup(philo, philo->right_fork, philo->left_fork))
 		return (EXIT_FAILURE);
 
 
 	// TODO: save timestamp to last meal
 	//		 then compare against timestamp now (now - time_of_last_meal)
 	//		 then die depending on time_to_die or set last meal to now
-	if (log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, EAT))
+
+	time_now = get_timestamp(table->start_time);
+	if (pthread_mutex_lock(&table->last_meal_mutex))
+		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
+	philo->time_of_last_meal = time_now;
+	if (pthread_mutex_unlock(&table->last_meal_mutex))
+		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
+
+	if (log_philo(time_now, &table->log_mutex, philo->id, EAT))
 		return (EXIT_FAILURE);
 	if (usleep(time_to_eat * 1000))
 		return (EXIT_FAILURE);
 
-	if (_putdown(philo->right_fork, philo->left_fork))
+	if (_putdown(philo, philo->right_fork, philo->left_fork))
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

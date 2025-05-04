@@ -45,7 +45,7 @@ void	*philo_routine(void *arg)
 	if (_wait_for_all(table))
 		return (NULL);
 	// TODO: offset of even numbered philos
-	while (table->dead == 0)
+	while (1)
 	{
 		/*if (philo->id == 1 && get_timestamp(table->start_time) >= 4000)*/
 		/*{*/

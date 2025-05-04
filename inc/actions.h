@@ -19,6 +19,5 @@
 
 int	_sleep(t_philo *philo, useconds_t time_to_sleep);
 int	_eat(t_philo *philo, useconds_t time_to_eat);
-int	_philo_dies(t_philo *philo, t_mutex *dead_mutex);
 
 #endif // !ACTIONS_H

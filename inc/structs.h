@@ -32,6 +32,7 @@ typedef struct s_table
 	t_mutex			in_sync_mutex;
 	unsigned int	dead;
 	t_mutex			dead_mutex;
+	t_mutex			last_meal_mutex;
 	t_mutex			log_mutex;
 	struct s_fork	*fork;
 }		t_table;
@@ -49,6 +50,7 @@ typedef struct s_philo
 	t_table			*table;
 	t_fork			*right_fork;
 	t_fork			*left_fork;
+	uint64_t		time_of_last_meal;
 }		t_philo;
 
 #endif //!STRUCTS_H

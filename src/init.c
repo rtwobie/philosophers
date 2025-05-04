@@ -69,6 +69,8 @@ static int	_init_mutex(t_table *table)
 		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
 	if (pthread_mutex_init(&table->dead_mutex, NULL))
 		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
+	if (pthread_mutex_init(&table->last_meal_mutex, NULL))
+		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
