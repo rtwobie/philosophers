@@ -35,6 +35,21 @@ static int _wait_for_all(t_table *table)
 	return (EXIT_SUCCESS);
 }
 
+static unsigned int	_check_alive(t_table *table)
+{
+	if (pthread_mutex_lock(&table->dead_mutex))
+		return (log_msg(ERR_MUTEX_LOCK_MSG), 0);
+	if (table->dead)
+	{
+		if (pthread_mutex_unlock(&table->dead_mutex))
+			return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
+		return (table->dead);
+	}
+	if (pthread_mutex_unlock(&table->dead_mutex))
+		return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
+	return (0);
+}
+
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
@@ -45,23 +60,14 @@ void	*philo_routine(void *arg)
 	if (_wait_for_all(table))
 		return (NULL);
 	// TODO: offset of even numbered philos
-	while (1)
+	while (!_check_alive(table))
 	{
-		/*if (philo->id == 1 && get_timestamp(table->start_time) >= 4000)*/
-		/*{*/
-		/*	if (_philo_dies(philo, &table->dead_mutex))*/
-		/*		return (NULL);*/
-		/*}*/
-
-		_sleep(philo, (useconds_t)table->time_to_sleep);
-		_eat(philo, (useconds_t)table->time_to_eat);
-		/*log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, THINK);*/
-		/*usleep(1000 * 1000);*/
-		// TODO: eat, sleep, think, pickup, putdown;
-		// for reference
-		// check:
-		// https://web.eecs.utk.edu/~mbeck/classes/cs560/560/notes/Dphil/lecture.html
-		// https://www.cs.yale.edu/homes/aspnes/pinewiki/Deadlock.html
+		if (_eat(philo, (useconds_t)table->time_to_eat))
+			return (NULL);
+		if (_sleep(philo, (useconds_t)table->time_to_sleep))
+			return (NULL);
+		if (_think(philo, 3))
+			return (NULL);
 	}
 	return (NULL);
 }

@@ -43,6 +43,7 @@ SRC		+= simulation.c
 SRC		+= monitor_routine.c
 SRC		+= philo_routine.c
 SRC		+= philo_actions.c
+SRC		+= forks.c
 SRC		+= time.c
 SRC		+= log.c
 SRC		+= cleanup.c

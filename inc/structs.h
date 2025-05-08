@@ -29,8 +29,8 @@ typedef struct s_table
 	int				time_to_think;
 	uint64_t		start_time;
 	bool			in_sync;
-	t_mutex			in_sync_mutex;
 	unsigned int	dead;
+	t_mutex			in_sync_mutex;
 	t_mutex			dead_mutex;
 	t_mutex			last_meal_mutex;
 	t_mutex			log_mutex;

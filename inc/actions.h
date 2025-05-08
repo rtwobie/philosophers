@@ -19,5 +19,6 @@
 
 int	_sleep(t_philo *philo, useconds_t time_to_sleep);
 int	_eat(t_philo *philo, useconds_t time_to_eat);
+int	_think(t_philo *philo, useconds_t time_to_think);
 
 #endif // !ACTIONS_H

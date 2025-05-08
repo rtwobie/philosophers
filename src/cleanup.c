@@ -33,6 +33,8 @@ void	at_exit(t_philo *philos, t_table *table)
 		destroy_forks(table->fork, table->philo_count);
 	pthread_mutex_destroy(&table->in_sync_mutex);
 	pthread_mutex_destroy(&table->log_mutex);
+	pthread_mutex_destroy(&table->dead_mutex);
+	pthread_mutex_destroy(&table->last_meal_mutex);
 	if (philos)
 		free(philos);
 }

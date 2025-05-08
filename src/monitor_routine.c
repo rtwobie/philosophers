@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <unistd.h>
 #include "structs.h"
 #include "log.h"
 #include "time.h"
@@ -23,7 +24,11 @@ static int	_last_time_eaten(t_philo *philo, t_table *table)
 	if (pthread_mutex_lock(&table->last_meal_mutex))
 		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
 	if (time_now - philo->time_of_last_meal >= (uint64_t)table->time_to_die)
+	{
+		if (pthread_mutex_unlock(&table->last_meal_mutex))
+			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
 		return (1);
+	}
 	if (pthread_mutex_unlock(&table->last_meal_mutex))
 		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
 	return (0);
@@ -49,6 +54,7 @@ static int _check_death(t_philo *philos, t_table *table)
 		if (_last_time_eaten(&philos[i], table))
 			if (_philo_dies(&philos[i], &table->dead_mutex))
 				return (EXIT_FAILURE);
+		++i;
 	}
 	return (EXIT_SUCCESS);
 }
@@ -58,7 +64,11 @@ static unsigned int	_check_alive(t_table *table)
 	if (pthread_mutex_lock(&table->dead_mutex))
 		return (log_msg(ERR_MUTEX_LOCK_MSG), 0);
 	if (table->dead)
+	{
+		if (pthread_mutex_unlock(&table->dead_mutex))
+			return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
 		return (table->dead);
+	}
 	if (pthread_mutex_unlock(&table->dead_mutex))
 		return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
 	return (0);
@@ -83,6 +93,7 @@ void	*monitor_routine(void *arg)
 			return (NULL);
 		}
 		_check_death(philos, table);
+		usleep(1 * 1000); // TODO: TEST ON CAMPUS
 	}
 	return (NULL);
 }
