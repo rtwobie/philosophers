@@ -39,6 +39,7 @@
 # define ERR_PTHREAD_CREATE_MSG "Failed to create thread!"
 
 void	log_msg(char *msg);
-int		log_philo(uint64_t timestamp, t_mutex *log_mutex, unsigned int id, char *status);
+int		log_philo(uint64_t timestamp, t_mutex *log_mutex, \
+					unsigned int id, char *status);
 
 #endif // !LOG_H

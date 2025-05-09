@@ -19,7 +19,10 @@ void	log_msg(char *msg)
 	printf("%s\n", msg);
 }
 
-int	log_philo(uint64_t timestamp, t_mutex *log_mutex, unsigned int id, char *status)
+int	log_philo(uint64_t timestamp, \
+				t_mutex *log_mutex, \
+				unsigned int id, \
+				char *status)
 {
 	if (pthread_mutex_lock(log_mutex))
 		return (EXIT_FAILURE);

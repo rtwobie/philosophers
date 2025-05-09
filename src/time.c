@@ -14,14 +14,15 @@
 #include <stdint.h>
 #include <sys/time.h>
 
-uint64_t get_time(void)
+uint64_t	get_time(void)
 {
-	struct timeval tv;
+	struct timeval	tv;
+
 	gettimeofday(&tv, NULL);
 	return (((uint64_t)tv.tv_sec * 1000) + (uint64_t)tv.tv_usec / 1000);
 }
 
-uint64_t get_timestamp(uint64_t start_time)
+uint64_t	get_timestamp(uint64_t start_time)
 {
 	return (get_time() - start_time);
 }

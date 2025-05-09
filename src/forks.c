@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:48:03 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/08 17:03:22 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/09 20:51:36 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,7 @@
 #include <unistd.h>
 #include "log.h"
 #include "structs.h"
-
-static unsigned int	_check_alive(t_table *table)
-{
-	if (pthread_mutex_lock(&table->dead_mutex))
-		return (log_msg(ERR_MUTEX_LOCK_MSG), 0);
-	if (table->dead)
-	{
-		if (pthread_mutex_unlock(&table->dead_mutex))
-			return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
-		return (table->dead);
-	}
-	if (pthread_mutex_unlock(&table->dead_mutex))
-		return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
-	return (0);
-}
+#include "philo_utils.h"
 
 static int _pickup_right_first(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
 {

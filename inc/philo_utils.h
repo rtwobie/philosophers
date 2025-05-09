@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   actions.h                                          :+:      :+:    :+:   */
+/*   philo_utils.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/02 16:03:26 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/02 16:56:58 by rha-le           ###   ########.fr       */
+/*   Created: 2025/05/09 20:29:16 by rha-le            #+#    #+#             */
+/*   Updated: 2025/05/09 20:30:15 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ACTIONS_H
-# define ACTIONS_H
+#ifndef PHILO_UTILS_H
+# define PHILO_UTILS_H
 
-# include <unistd.h>
 # include "structs.h"
 
-int	_sleep(t_philo *philo, useconds_t time_to_sleep);
-int	_eat(t_philo *philo, useconds_t time_to_eat);
-int	_think(t_philo *philo, useconds_t time_to_think);
+unsigned int	_check_alive(t_table *table);
+int				_wait_for_all(t_table *table);
 
-#endif // !ACTIONS_H
+#endif // !PHILO_UTILS_H

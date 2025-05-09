@@ -16,7 +16,7 @@
 #include "log.h"
 #include "cleanup.h"
 
-static int _set_in_sync(t_table *table)
+static int	_set_in_sync(t_table *table)
 {
 	if (pthread_mutex_lock(&table->in_sync_mutex))
 		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
@@ -35,7 +35,6 @@ static int	_spawn_philos(t_philo *philos, int count)
 	{
 		if (pthread_create(&philos[i].thread, NULL, philo_routine, &philos[i]))
 		{
-			// WARN: propably reduntant due to at_exit() in simulation()
 			destroy_forks(philos->table->fork, count);
 			free(philos);
 			return (log_msg(ERR_PTHREAD_CREATE_MSG), EXIT_FAILURE);
@@ -54,29 +53,22 @@ static int	_spawn_monitor(pthread_t *monitor_thread, t_philo *philos)
 
 int	simulation(t_philo *philos, t_table *table, pthread_t *monitor_thread)
 {
-	// TEST: for debug;
-	for (int i = 0; i < table->philo_count; i++)
-		printf("%i has fork %i and %i\n", philos[i].id, philos[i].right_fork->id, philos[i].left_fork->id);
+	int	i;
 
 	if (_spawn_philos(philos, table->philo_count))
 		return (EXIT_FAILURE);
-
 	philos->table->start_time = get_time();
 	if (_set_in_sync(philos->table))
 		return (EXIT_FAILURE);
-
 	if (_spawn_monitor(monitor_thread, philos))
 		return (EXIT_FAILURE);
-
-	for (int i = 0; i < table->philo_count; i++)
+	i = 0;
+	while (i < table->philo_count)
+	{
 		pthread_join(philos[i].thread, NULL);
+		++i;
+	}
 	pthread_join(*monitor_thread, NULL);
-
 	at_exit(philos, table);
 	return (EXIT_SUCCESS);
 }
-
-// TODO:
-// wait for all threads to be created;
-// start simulation;
-// cleanup;

@@ -74,15 +74,6 @@ static int	_init_mutex(t_table *table)
 	return (EXIT_SUCCESS);
 }
 
-/*static int	_calc_think_time(int time_to_eat, int time_to_sleep, int count)*/
-/*{*/
-/*	int	time_to_think;*/
-/**/
-/*	time_to_think = 0;*/
-/*	if ((count & 1) && )*/
-/*	return (time_to_think);*/
-/*}*/
-
 int	init(t_philo **philos, t_table *table, int argc, char *argv[])
 {
 	if (_parse_input(argc, argv, table))
@@ -96,7 +87,5 @@ int	init(t_philo **philos, t_table *table, int argc, char *argv[])
 		destroy_forks(table->fork, table->philo_count);
 		return (EXIT_FAILURE);
 	}
-	// TODO: thinking_time
-	//	table->time_to_think = _calc_think_time();
 	return (EXIT_SUCCESS);
 }

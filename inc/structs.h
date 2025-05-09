@@ -13,8 +13,6 @@
 #ifndef STRUCTS_H
 # define STRUCTS_H
 
-#include <stdio.h> // TODO: delete after!
-
 # include <pthread.h>
 # include <stdbool.h>
 
