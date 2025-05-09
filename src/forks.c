@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:48:03 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/09 20:51:36 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/09 21:12:06 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,25 @@
 #include "structs.h"
 #include "philo_utils.h"
 
-static int _pickup_right_first(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
+static int	_pickup_right_first(t_philo *philo, \
+								t_fork *right_fork, \
+								t_fork *left_fork)
 {
-	t_table *table;
+	t_table	*tbl;
 
-	table = philo->table;
+	tbl = philo->table;
 	if (pthread_mutex_lock(&right_fork->mutex))
 		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
-	if (_check_alive(table))
+	if (_check_alive(tbl))
 	{
 		if (pthread_mutex_unlock(&right_fork->mutex))
 			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
 		return (1);
 	}
-	log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, FORK); // NOTE: Change later!
+	log_philo(get_timestamp(tbl->start_time), &tbl->log_mutex, philo->id, FORK);
 	if (pthread_mutex_lock(&left_fork->mutex))
 		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
-	if (_check_alive(table))
+	if (_check_alive(tbl))
 	{
 		if (pthread_mutex_unlock(&left_fork->mutex))
 			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
@@ -40,34 +42,42 @@ static int _pickup_right_first(t_philo *philo, t_fork *right_fork, t_fork *left_
 			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
 		return (1);
 	}
-	log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, FORK); // NOTE: Change later!
+	log_philo(get_timestamp(tbl->start_time), &tbl->log_mutex, philo->id, FORK);
 	return (EXIT_SUCCESS);
 }
 
-static int _pickup_left_first(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
+static int	_single_philo(t_philo *philo)
 {
-	t_table *table;
-
-	table = philo->table;
-	if (pthread_mutex_lock(&left_fork->mutex))
-		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
-	if (_check_alive(table))
-	{
-		if (pthread_mutex_unlock(&left_fork->mutex))
-			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
-		return (1);
-	}
-	log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, FORK); // NOTE: Change later!
 	if (philo->left_fork == philo->right_fork)
 	{
-		usleep((useconds_t)table->time_to_die * 1000);
-		if (pthread_mutex_unlock(&left_fork->mutex))
+		usleep((useconds_t)philo->table->time_to_die * 1000);
+		if (pthread_mutex_unlock(&philo->left_fork->mutex))
 			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
 		return (1);
 	}
+	return (0);
+}
+
+static int	_pickup_left_first(t_philo *philo, \
+								t_fork *right_fork, \
+								t_fork *left_fork)
+{
+	t_table	*tbl;
+
+	tbl = philo->table;
+	if (pthread_mutex_lock(&left_fork->mutex))
+		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
+	if (_check_alive(tbl))
+	{
+		pthread_mutex_unlock(&left_fork->mutex);
+		return (1);
+	}
+	log_philo(get_timestamp(tbl->start_time), &tbl->log_mutex, philo->id, FORK);
+	if (_single_philo(philo))
+		return (1);
 	if (pthread_mutex_lock(&right_fork->mutex))
 		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
-	if (_check_alive(table))
+	if (_check_alive(tbl))
 	{
 		if (pthread_mutex_unlock(&right_fork->mutex))
 			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
@@ -75,11 +85,11 @@ static int _pickup_left_first(t_philo *philo, t_fork *right_fork, t_fork *left_f
 			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
 		return (1);
 	}
-	log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, FORK); // NOTE: Change later!
+	log_philo(get_timestamp(tbl->start_time), &tbl->log_mutex, philo->id, FORK);
 	return (EXIT_SUCCESS);
 }
 
-int _pickup(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
+int	_pickup(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
 {
 	if (philo->id % 2 == 0)
 	{
@@ -94,18 +104,11 @@ int _pickup(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
 	return (EXIT_SUCCESS);
 }
 
-int _putdown(t_philo *philo, t_fork *right_fork, t_fork *left_fork)
+int	_putdown(t_fork *right_fork, t_fork *left_fork)
 {
-	/*t_table *table;*/
-	/**/
-	/*table = philo->table;*/
-	(void)philo;
 	if (pthread_mutex_unlock(&right_fork->mutex))
 		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
-	/*log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, DEBUG_FORK_R2); // NOTE: Delete later!*/
 	if (pthread_mutex_unlock(&left_fork->mutex))
 		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
-	/*log_philo(get_timestamp(table->start_time), &table->log_mutex, philo->id, DEBUG_FORK_L2); // NOTE: Delete later!*/
 	return (EXIT_SUCCESS);
 }
-

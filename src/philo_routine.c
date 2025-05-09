@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 19:04:58 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/09 20:55:19 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/09 20:58:56 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 void	*philo_routine(void *arg)
 {
 	t_philo	*philo;
-	t_table *table;
+	t_table	*table;
 
 	philo = (t_philo *)arg;
 	table = philo->table;
