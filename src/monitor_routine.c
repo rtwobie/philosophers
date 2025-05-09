@@ -44,7 +44,7 @@ static int	_philo_dies(t_philo *philo, t_mutex *dead_mutex)
 	return (EXIT_SUCCESS);
 }
 
-static int _check_death(t_philo *philos, t_table *table)
+static int	_check_death(t_philo *philos, t_table *table)
 {
 	int	i;
 
@@ -88,12 +88,12 @@ void	*monitor_routine(void *arg)
 		dead = _check_alive(table);
 		if (dead)
 		{
-			// TODO: exit and stop all threads
-			log_philo(get_timestamp(table->start_time), &table->log_mutex, dead, DIE);
+			log_philo(get_timestamp(table->start_time), &table->log_mutex, \
+						dead, DIE);
 			return (NULL);
 		}
 		_check_death(philos, table);
-		usleep(1 * 1000); // TODO: TEST ON CAMPUS
+		usleep(1 * 1000);
 	}
 	return (NULL);
 }
