@@ -32,6 +32,11 @@ ifeq ($(TSAN), 1)
 	LDFLAGS	+= -fsanitize=thread
 endif
 
+ifeq ($(ASAN), 1)
+	CFLAGS	+= -fsanitize=address
+	LDFLAGS	+= -fsanitize=address
+endif
+
 # sources
 SRC		:=
 
@@ -43,6 +48,7 @@ SRC		+= simulation.c
 SRC		+= monitor_routine.c
 SRC		+= philo_routine.c
 SRC		+= philo_actions.c
+SRC		+= philo_utils.c
 SRC		+= forks.c
 SRC		+= time.c
 SRC		+= log.c
