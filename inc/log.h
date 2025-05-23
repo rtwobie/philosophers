@@ -32,6 +32,7 @@
 # define INVALID_DIE_TIME_MSG "Invalid time_to_die!"
 # define INVALID_EAT_TIME_MSG "Invalid time_to_eat!"
 # define INVALID_SLEEP_TIME_MSG "Invalid time_to_sleep!"
+# define INVALID_MIN_AMOUNT_EAT_MSG "Invalid minimum_amount_to_eat!"
 # define ERR_INIT_FORKS_MSG "Failed to initialize forks!"
 # define ERR_INIT_MUTEX_MSG "Failed to initialize mutex!"
 # define ERR_MUTEX_LOCK_MSG "Failed to lock mutex!"
