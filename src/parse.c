@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:32:46 by rha-le            #+#    #+#             */
-/*   Updated: 2025/04/30 19:10:06 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/05/09 21:27:15 by rha-le           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,15 @@ static int	_ft_atoi(const char *nptr)
 
 int	_parse_input(int argc, char *argv[], t_table *table)
 {
-	if (argc != 5)
+	if (argc == 5)
+		table->min_num_of_meals = -1;
+	else if (argc == 6)
+		table->min_num_of_meals = _ft_atoi(argv[5]);
+	else
 		return (log_msg(WRONG_NUM_OF_ARG_MSG), EXIT_FAILURE);
 	table->philo_count = _ft_atoi(argv[1]);
+	if (table->philo_count > 250)
+		table->philo_count = 250;
 	if (table->philo_count == -1)
 		return (log_msg(INVALID_PHILO_SIZE_MSG), EXIT_FAILURE);
 	table->time_to_die = _ft_atoi(argv[2]);

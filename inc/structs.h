@@ -13,8 +13,6 @@
 #ifndef STRUCTS_H
 # define STRUCTS_H
 
-#include <stdio.h> // TODO: delete after!
-
 # include <pthread.h>
 # include <stdbool.h>
 
@@ -29,9 +27,13 @@ typedef struct s_table
 	int				time_to_think;
 	uint64_t		start_time;
 	bool			in_sync;
-	t_mutex			in_sync_mutex;
+	int				min_num_of_meals;
+	int				amount_full;
 	unsigned int	dead;
+	t_mutex			full_mutex;
+	t_mutex			in_sync_mutex;
 	t_mutex			dead_mutex;
+	t_mutex			last_meal_mutex;
 	t_mutex			log_mutex;
 	struct s_fork	*fork;
 }		t_table;
@@ -49,6 +51,8 @@ typedef struct s_philo
 	t_table			*table;
 	t_fork			*right_fork;
 	t_fork			*left_fork;
+	uint64_t		time_of_last_meal;
+	int				times_eaten;
 }		t_philo;
 
 #endif //!STRUCTS_H
