@@ -15,6 +15,7 @@
 #include "structs.h"
 #include "log.h"
 #include "time.h"
+#include "philo_utils.h"
 
 static int	_last_time_eaten(t_philo *philo, t_table *table)
 {
@@ -59,19 +60,16 @@ static int	_check_death(t_philo *philos, t_table *table)
 	return (EXIT_SUCCESS);
 }
 
-static unsigned int	_check_alive(t_table *table)
+static unsigned int	_get_dead_philo(t_table *table)
 {
+	unsigned int	dead;
+
 	if (pthread_mutex_lock(&table->dead_mutex))
-		return (log_msg(ERR_MUTEX_LOCK_MSG), 0);
-	if (table->dead)
-	{
-		if (pthread_mutex_unlock(&table->dead_mutex))
-			return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
-		return (table->dead);
-	}
+		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
+	dead = table->dead;
 	if (pthread_mutex_unlock(&table->dead_mutex))
-		return (log_msg(ERR_MUTEX_UNLOCK_MSG), 0);
-	return (0);
+		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
+	return (dead);
 }
 
 void	*monitor_routine(void *arg)
@@ -85,7 +83,7 @@ void	*monitor_routine(void *arg)
 	dead = 0;
 	while (1)
 	{
-		dead = _check_alive(table);
+		dead = _get_dead_philo(table);
 		if (dead)
 		{
 			log_philo(get_timestamp(table->start_time), &table->log_mutex, \
@@ -93,7 +91,9 @@ void	*monitor_routine(void *arg)
 			return (NULL);
 		}
 		_check_death(philos, table);
-		usleep(1 * 1000);
+		if (_check_all_full(table))
+			return (NULL);
+		usleep(500);
 	}
 	return (NULL);
 }

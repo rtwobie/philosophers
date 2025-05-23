@@ -40,7 +40,11 @@ static int	_ft_atoi(const char *nptr)
 
 int	_parse_input(int argc, char *argv[], t_table *table)
 {
-	if (argc != 5)
+	if (argc == 5)
+		table->min_num_of_meals = -1;
+	else if (argc == 6)
+		table->min_num_of_meals = _ft_atoi(argv[5]);
+	else
 		return (log_msg(WRONG_NUM_OF_ARG_MSG), EXIT_FAILURE);
 	table->philo_count = _ft_atoi(argv[1]);
 	if (table->philo_count > 250)

@@ -37,6 +37,8 @@ int	_eat(t_philo *philo, useconds_t time_to_eat)
 		return (EXIT_FAILURE);
 	if (usleep(time_to_eat * 1000))
 		return (EXIT_FAILURE);
+	if (_increase_eaten(table, philo))
+		return (EXIT_FAILURE);
 	_putdown(philo->right_fork, philo->left_fork);
 	return (EXIT_SUCCESS);
 }

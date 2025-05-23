@@ -27,7 +27,10 @@ typedef struct s_table
 	int				time_to_think;
 	uint64_t		start_time;
 	bool			in_sync;
+	int				min_num_of_meals;
+	int				amount_full;
 	unsigned int	dead;
+	t_mutex			full_mutex;
 	t_mutex			in_sync_mutex;
 	t_mutex			dead_mutex;
 	t_mutex			last_meal_mutex;
@@ -49,6 +52,7 @@ typedef struct s_philo
 	t_fork			*right_fork;
 	t_fork			*left_fork;
 	uint64_t		time_of_last_meal;
+	int				times_eaten;
 }		t_philo;
 
 #endif //!STRUCTS_H

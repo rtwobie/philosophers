@@ -16,7 +16,6 @@
 #include "actions.h"
 #include "philo_utils.h"
 #include "time.h"
-#include "log.h"
 
 void	*philo_routine(void *arg)
 {
@@ -30,7 +29,7 @@ void	*philo_routine(void *arg)
 	if (philo->id % 2 == 0)
 		if (_think(philo, 1))
 			return (NULL);
-	while (!_check_alive(table))
+	while (!_check_alive(table) && !_check_all_full(table))
 	{
 		if (_eat(philo, (useconds_t)table->time_to_eat))
 			return (NULL);
