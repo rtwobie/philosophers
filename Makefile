@@ -32,6 +32,11 @@ ifeq ($(TSAN), 1)
 	LDFLAGS	+= -fsanitize=thread
 endif
 
+ifeq ($(LSAN), 1)
+	CFLAGS	+= -fsanitize=leak
+	LDFLAGS	+= -fsanitize=leak
+endif
+
 ifeq ($(ASAN), 1)
 	CFLAGS	+= -fsanitize=address
 	LDFLAGS	+= -fsanitize=address
