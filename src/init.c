@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <pthread.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "structs.h"
 #include "init.h"
 #include "cleanup.h"
@@ -32,7 +34,7 @@ static int	_init_forks(t_table *table)
 	{
 		if (pthread_mutex_init(&fork[i].mutex, NULL))
 		{
-			destroy_forks(fork, table->philo_count);
+			destroy_forks(fork, i);
 			return (log_msg(ERR_INIT_FORKS_MSG), EXIT_FAILURE);
 		}
 		fork[i].id = (unsigned int)i + 1;
@@ -61,26 +63,11 @@ static int	_init_philo(t_philo **philos, t_table *table)
 	return (EXIT_SUCCESS);
 }
 
-static int	_init_mutex(t_table *table)
-{
-	if (pthread_mutex_init(&table->in_sync_mutex, NULL))
-		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
-	if (pthread_mutex_init(&table->log_mutex, NULL))
-		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
-	if (pthread_mutex_init(&table->dead_mutex, NULL))
-		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
-	if (pthread_mutex_init(&table->last_meal_mutex, NULL))
-		return (log_msg(ERR_INIT_MUTEX_MSG), EXIT_FAILURE);
-	return (EXIT_SUCCESS);
-}
-
 int	init(t_philo **philos, t_table *table, int argc, char *argv[])
 {
 	if (_parse_input(argc, argv, table))
 		return (EXIT_FAILURE);
 	if (_init_forks(table))
-		return (EXIT_FAILURE);
-	if (_init_mutex(table))
 		return (EXIT_FAILURE);
 	if (_init_philo(philos, table))
 	{

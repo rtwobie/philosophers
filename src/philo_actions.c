@@ -20,12 +20,26 @@
 int	_pickup(t_philo *philo, t_fork *right_fork, t_fork *left_fork);
 int	_putdown(t_fork *right_fork, t_fork *left_fork);
 
+int	sleep_cycle(useconds_t usec, t_table *table)
+{
+	uint64_t	start_time;
+
+	start_time = get_time();
+	while (1)
+	{
+		usleep(500);
+		if (get_timestamp(start_time) >= usec / 1000 || _check_alive(table))
+			break ;
+	}
+	return (0);
+}
+
 int	_eat(t_philo *philo, useconds_t time_to_eat)
 {
 	t_table	*table;
 
 	table = philo->table;
-	if (_check_alive(table))
+	if (_check_alive(table) || _check_all_full(table))
 		return (1);
 	if (_pickup(philo, philo->right_fork, philo->left_fork))
 		return (1);
@@ -49,7 +63,7 @@ int	_sleep(t_philo *philo, useconds_t time_to_sleep)
 	t_table	*table;
 
 	table = philo->table;
-	if (_check_alive(table))
+	if (_check_alive(table) || _check_all_full(table))
 		return (1);
 	if (log_philo(get_timestamp(table->start_time), &table->log_mutex, \
 			philo->id, SLEEP))
@@ -64,7 +78,7 @@ int	_think(t_philo *philo, useconds_t time_to_think)
 	t_table	*table;
 
 	table = philo->table;
-	if (_check_alive(table))
+	if (_check_alive(table) || _check_all_full(table))
 		return (1);
 	if (log_philo(get_timestamp(table->start_time), &table->log_mutex, \
 			philo->id, THINK))

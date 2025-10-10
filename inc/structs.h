@@ -6,7 +6,7 @@
 /*   By: rha-le <rha-le@student.42berlin.de>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:11:19 by rha-le            #+#    #+#             */
-/*   Updated: 2025/05/02 16:46:44 by rha-le           ###   ########.fr       */
+/*   Updated: 2025/10/10 21:50:55 by rtwobie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@ typedef pthread_mutex_t	t_mutex;
 
 typedef struct s_table
 {
+	t_mutex			full_mutex;
+	t_mutex			in_sync_mutex;
+	t_mutex			dead_mutex;
+	t_mutex			last_meal_mutex;
+	t_mutex			log_mutex;
+	struct s_fork	*fork;
 	int				philo_count;
 	int				time_to_die;
 	int				time_to_eat;
@@ -30,12 +36,6 @@ typedef struct s_table
 	int				min_num_of_meals;
 	int				amount_full;
 	unsigned int	dead;
-	t_mutex			full_mutex;
-	t_mutex			in_sync_mutex;
-	t_mutex			dead_mutex;
-	t_mutex			last_meal_mutex;
-	t_mutex			log_mutex;
-	struct s_fork	*fork;
 }		t_table;
 
 typedef struct s_fork

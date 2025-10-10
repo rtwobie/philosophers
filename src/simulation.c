@@ -11,10 +11,11 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "structs.h"
-#include "routine.h"
-#include "log.h"
+
 #include "cleanup.h"
+#include "log.h"
+#include "routine.h"
+#include "structs.h"
 
 static int	_set_in_sync(t_table *table)
 {
@@ -34,11 +35,7 @@ static int	_spawn_philos(t_philo *philos, int count)
 	while (i < count)
 	{
 		if (pthread_create(&philos[i].thread, NULL, philo_routine, &philos[i]))
-		{
-			destroy_forks(philos->table->fork, count);
-			free(philos);
-			return (log_msg(ERR_PTHREAD_CREATE_MSG), EXIT_FAILURE);
-		}
+			return (log_msg(ERR_PTHREAD_CREATE_MSG), i);
 		++i;
 	}
 	return (EXIT_SUCCESS);
@@ -51,17 +48,38 @@ static int	_spawn_monitor(pthread_t *monitor_thread, t_philo *philos)
 	return (EXIT_SUCCESS);
 }
 
-int	simulation(t_philo *philos, t_table *table, pthread_t *monitor_thread)
+int	clean_on_err(t_philo *philos, t_table *table, int philo_count)
 {
 	int	i;
 
-	if (_spawn_philos(philos, table->philo_count))
-		return (EXIT_FAILURE);
+	i = 0;
+	if (pthread_mutex_lock(&table->full_mutex))
+		return (log_msg(ERR_MUTEX_LOCK_MSG), EXIT_FAILURE);
+	table->amount_full = table->philo_count;
+	if (pthread_mutex_unlock(&table->full_mutex))
+		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
+	while (i < philo_count)
+	{
+		pthread_join(philos[i].thread, NULL);
+		++i;
+	}
+	at_exit(philos, table);
+	return (EXIT_SUCCESS);
+}
+
+int	simulation(t_philo *philos, t_table *table, pthread_t *monitor_thread)
+{
+	int	failed_philo;
+	int	i;
+
+	failed_philo = _spawn_philos(philos, table->philo_count);
+	if (failed_philo)
+		return (clean_on_err(philos, table, failed_philo), EXIT_FAILURE);
 	philos->table->start_time = get_time();
 	if (_set_in_sync(philos->table))
-		return (EXIT_FAILURE);
+		return (clean_on_err(philos, table, table->philo_count), EXIT_FAILURE);
 	if (_spawn_monitor(monitor_thread, philos))
-		return (EXIT_FAILURE);
+		return (clean_on_err(philos, table, table->philo_count), EXIT_FAILURE);
 	i = 0;
 	while (i < table->philo_count)
 	{
