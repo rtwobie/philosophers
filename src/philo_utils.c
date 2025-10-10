@@ -11,8 +11,11 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "structs.h"
+#include <unistd.h>
+
 #include "log.h"
+#include "structs.h"
+#include "time.h"
 
 int	_wait_for_all(t_table *table)
 {
@@ -78,4 +81,19 @@ int	_increase_eaten(t_table *table, t_philo *philo)
 			return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
+}
+
+int sleep_cycle(useconds_t usec, t_table *table)
+{
+	uint64_t	start_time;
+
+	start_time = get_time();
+	while (1)
+	{
+		if (usleep(1 * 1000))
+			return (-1);
+		if (get_timestamp(start_time) >= usec / 1000 || _check_alive(table))
+			break ;
+	}
+	return (0);
 }

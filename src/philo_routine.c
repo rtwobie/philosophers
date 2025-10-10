@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include <unistd.h>
-#include "structs.h"
+
 #include "actions.h"
 #include "philo_utils.h"
-#include "time.h"
+#include "structs.h"
 
 void	*philo_routine(void *arg)
 {

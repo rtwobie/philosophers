@@ -12,9 +12,10 @@
 
 #include <stdlib.h>
 #include <unistd.h>
-#include "structs.h"
+
 #include "log.h"
 #include "philo_utils.h"
+#include "structs.h"
 
 int	_pickup(t_philo *philo, t_fork *right_fork, t_fork *left_fork);
 int	_putdown(t_fork *right_fork, t_fork *left_fork);
@@ -35,7 +36,7 @@ int	_eat(t_philo *philo, useconds_t time_to_eat)
 		return (log_msg(ERR_MUTEX_UNLOCK_MSG), EXIT_FAILURE);
 	if (log_philo(philo->time_of_last_meal, &table->log_mutex, philo->id, EAT))
 		return (EXIT_FAILURE);
-	if (usleep(time_to_eat * 1000))
+	if (sleep_cycle(time_to_eat * 1000, table))
 		return (EXIT_FAILURE);
 	if (_increase_eaten(table, philo))
 		return (EXIT_FAILURE);
@@ -53,7 +54,7 @@ int	_sleep(t_philo *philo, useconds_t time_to_sleep)
 	if (log_philo(get_timestamp(table->start_time), &table->log_mutex, \
 			philo->id, SLEEP))
 		return (EXIT_FAILURE);
-	if (usleep(time_to_sleep * 1000))
+	if (sleep_cycle(time_to_sleep * 1000, table))
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
@@ -68,7 +69,7 @@ int	_think(t_philo *philo, useconds_t time_to_think)
 	if (log_philo(get_timestamp(table->start_time), &table->log_mutex, \
 			philo->id, THINK))
 		return (EXIT_FAILURE);
-	if (usleep(time_to_think * 1000))
+	if (sleep_cycle(time_to_think * 1000, table))
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

@@ -13,11 +13,14 @@
 #ifndef PHILO_UTILS_H
 # define PHILO_UTILS_H
 
+# include <unistd.h>
+
 # include "structs.h"
 
 unsigned int	_check_alive(t_table *table);
 int				_wait_for_all(t_table *table);
 int				_increase_eaten(t_table *table, t_philo *philo);
 int				_check_all_full(t_table *table);
+int				sleep_cycle(useconds_t usec, t_table *table);
 
 #endif // !PHILO_UTILS_H
